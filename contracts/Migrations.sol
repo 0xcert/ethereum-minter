@@ -16,7 +16,7 @@ contract Migrations is Ownable {
   /**
    * @dev Contract constructor.
    */
-  function Migrations()
+  constructor()
     public
   {
     owner = msg.sender;
