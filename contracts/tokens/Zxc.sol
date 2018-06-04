@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-import "../../../ethereum-xcert/node_modules/@0xcert/ethereum-erc721/contracts/math/SafeMath.sol";
-import "../../../ethereum-xcert/node_modules/@0xcert/ethereum-erc721/contracts/ownership/Ownable.sol";
+import "@0xcert/ethereum-utils/contracts/math/SafeMath.sol";
+import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 
 /*
  * @title ZXC  protocol token.

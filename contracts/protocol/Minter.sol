@@ -1,8 +1,8 @@
 pragma solidity ^0.4.24;
 
-import "@0xcert/ethereum-erc721/contracts/math/SafeMath.sol";
-import "@0xcert/ethereum-erc721/contracts/tokens/SupportsInterface.sol";
-import "@0xcert/ethereum-erc721/contracts/ownership/Ownable.sol";
+import "@0xcert/ethereum-utils/contracts/math/SafeMath.sol";
+import "@0xcert/ethereum-utils/contracts/utils/SupportsInterface.sol";
+import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 import "@0xcert/ethereum-xcert/contracts/tokens/Xcert.sol";
 import "../tokens/ERC20.sol";
 import "./TokenTransferProxy.sol";
@@ -408,45 +408,6 @@ contract Minter is SupportsInterface {
       _owner,
       TOKEN_TRANSFER_PROXY_CONTRACT
     );
-  }
-
-  /*
-   * @dev Check is payer can pay the feeAmounts.
-   * @param _to Address of the payer.
-   * @param_ feeAmounts All the feeAmounts to be payed.
-   * @return Confirmation if feeAmounts can be payed.
-   */
-  function _canPayFee(
-    address _to,
-    uint256[] _feeAmounts
-  )
-    internal
-    returns (bool)
-  {
-    uint256 feeAmountsum = 0;
-
-    for(uint256 i; i < _feeAmounts.length; i++)
-    {
-      feeAmountsum = feeAmountsum.add(_feeAmounts[i]);
-    }
-
-    if(_getBalance(ERC20_TOKEN_CONTRACT, _to) < feeAmountsum
-      || _getAllowance(ERC20_TOKEN_CONTRACT, _to) < feeAmountsum )
-    {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * @dev Checks if XcertMintProxy can mint specific _xcert.
-   */
-  function _canMint(address _xcert)
-    internal
-    constant
-    returns (bool)
-  {
-    return Xcert(_xcert).isAuthorizedAddress(XCERT_MINT_PROXY_CONTRACT);
   }
 
   /*
