@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-import "../../ethereum-xcert/node_modules/@0xcert/ethereum-erc721/contracts/ownership/Ownable.sol";
+import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 
 /**
  * @title Migrations
@@ -16,7 +16,7 @@ contract Migrations is Ownable {
   /**
    * @dev Contract constructor.
    */
-  function Migrations()
+  constructor()
     public
   {
     owner = msg.sender;

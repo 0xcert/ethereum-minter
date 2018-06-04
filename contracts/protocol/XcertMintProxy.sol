@@ -6,7 +6,7 @@ pragma solidity 0.4.24;
  */
 
 import "@0xcert/ethereum-xcert/contracts/tokens/Xcert.sol";
-import "@0xcert/ethereum-erc721/contracts/ownership/Ownable.sol";
+import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 
 /**
  * @title XcertMintProxy - Mints a token on behalf of contracts that have been approved via
