@@ -72,6 +72,7 @@
   },
   "dependencies": {
     "@0xcert/ethereum-xcert": "^1.6.0",
+    "@0xcert/ethereum-erc20": "^1.2.1",
     "@chainspin/cli": "0.10.0",
     "@chainspin/test": "0.10.0",
     "typescript": "^2.9.1"
