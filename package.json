@@ -2,20 +2,29 @@
   "name": "@0xcert/ethereum-minter",
   "version": "1.0.0",
   "description": "Decentralized token minter implementation for the 0xcert protocol on the Ethereum blockchain.",
-  "main": "truffle.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "directories": {
     "contracts": "contracts",
     "migrations": "migrations",
     "test": "test"
   },
   "scripts": {
-    "compile": "truffle compile",
-    "console": "truffle console",
-    "flatten": "mkdir -p build && truffle-flattener contracts/**/*.sol >> build/bundle.sol",
-    "lint": "eslint './**/*.js?(x)'",
-    "migrate": "truffle migrate",
-    "networks": "truffle networks",
-    "test": "truffle test"
+    "clean": "rm -Rf ./dist; rm -Rf ./build",
+    "build": "npm run clean; tsc",
+    "compile": "chainspin compile",
+    "sandbox": "chainspin sandbox",
+    "prepare": "npm run build && npm run compile",
+    "test": "npm run prepare && chainspin test",
+    "flatten": "mkdir -p build && truffle-flattener contracts/**/*.sol >> build/bundle.sol"
+  },
+  "chainspin": {
+    "sandboxHost": "127.0.0.1",
+    "sandboxPort": 8545,
+    "solcSrc": "src/contracts",
+    "solcDist": "dist/contracts",
+    "testRoot": "dist/tests",
+    "testTimeout": 60000
   },
   "author": "0xcert",
   "license": "MIT",
@@ -57,12 +66,14 @@
   ],
   "devDependencies": {
     "eslint": "^4.19.1",
-    "truffle": "^4.1.11",
     "truffle-flattener": "^1.2.5",
     "ethjs-util": "^0.1.4",
     "web3-utils": "^1.0.0-beta.34"
   },
   "dependencies": {
-    "@0xcert/ethereum-xcert": "^1.6.0"
+    "@0xcert/ethereum-xcert": "^1.6.0",
+    "@chainspin/cli": "0.10.0",
+    "@chainspin/test": "0.10.0",
+    "typescript": "^2.9.1"
   }
 }
