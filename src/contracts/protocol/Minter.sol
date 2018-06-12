@@ -150,6 +150,51 @@ contract Minter is
   }
 
   /**
+   * @dev Performs Xcert mint directly to the taker.
+   * @param _mintData Data needed for minting.
+   * @param _xcertData Data needed for minting a new Xcert.
+   * @param _signatureData Data of the signed claim.
+   */
+  function performMint(
+    MintData _mintData,
+    XcertData _xcertData,
+    Signature _signatureData
+  )
+    public
+  {
+    bytes32 claim = getMintDataClaim(_mintData, _xcertData);
+    address owner = _getOwner(_xcertData.xcert);
+
+    require(_mintData.to == msg.sender, "You are not the mint recipient.");
+    require(owner != _mintData.to, "You cannot mint to the owner.");
+    require(_mintData.expirationTimestamp >= now, "Mint claim has expired.");
+
+    require(
+      isValidSignature(
+        owner,
+        claim,
+        _signatureData
+      ),
+      "Invalid signature"
+    );
+
+    require(!mintPerformed[claim], "Mint already performed.");
+    require(!mintCancelled[claim], "Mint canceled.");
+
+    mintPerformed[claim] = true;
+
+    _mintViaXcertMintProxy(_xcertData, _mintData.to);
+
+    _payfeeAmounts(_mintData);
+
+    emit PerformMint(
+      _mintData.to,
+      _xcertData.xcert,
+      claim
+    );
+  }
+
+  /**
    * @dev Calculates keccak-256 hash of mint data from parameters.
    * @param _mintData Data needed for minting trough minter.
    * @param _xcertData Data needed for minting a new Xcert.
