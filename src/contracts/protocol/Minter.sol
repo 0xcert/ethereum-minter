@@ -210,4 +210,29 @@ contract Minter is
       _signature.s
     );
   }
+
+  /*
+   * @dev Transfers ERC20 tokens via TokenTransferProxy using transferFrom function.
+   * @param _token Address of token to transferFrom.
+   * @param _from Address transfering token.
+   * @param _to Address receiving token.
+   * @param _value Amount of token to transfer.
+   * @return Success of token transfer.
+   */
+  function _transferViaTokenTransferProxy(
+    address _token,
+    address _from,
+    address _to,
+    uint _value
+  )
+    internal
+    returns (bool)
+  {
+    return TokenTransferProxy(TOKEN_TRANSFER_PROXY_CONTRACT).transferFrom(
+      _token,
+      _from,
+      _to,
+      _value
+    );
+  }
 }
