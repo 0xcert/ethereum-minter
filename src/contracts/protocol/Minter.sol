@@ -20,7 +20,6 @@ contract Minter is
    * @dev contract addresses
    */
   address XCERT_MINT_PROXY_CONTRACT;
-  address ERC20_TOKEN_CONTRACT;
   address TOKEN_TRANSFER_PROXY_CONTRACT;
 
   /** 
@@ -51,6 +50,7 @@ contract Minter is
   struct Fee{
     address feeAddress;
     uint256 feeAmount;
+    address tokenAddress;
   }
 
   /** 
@@ -98,32 +98,18 @@ contract Minter is
 
   /**
    * @dev Sets XCT token address, Token proxy address and xcert Proxy address.
-   * @param _erc20Token Address pointing to ERC20 Token contract.
    * @param _tokenTransferProxy Address pointing to TokenTransferProxy contract.
    * @param _xcertMintProxy Address pointing to XcertProxy contract.
    */
   constructor(
-    address _erc20Token,
     address _tokenTransferProxy,
     address _xcertMintProxy
   )
     public
   {
-    ERC20_TOKEN_CONTRACT = _erc20Token;
     TOKEN_TRANSFER_PROXY_CONTRACT = _tokenTransferProxy;
     XCERT_MINT_PROXY_CONTRACT = _xcertMintProxy;
     //supportedInterfaces[0xe0b725c2] = true; // Minter
-  }
-
-  /** 
-   * @dev Get address of token used in minter.
-   */
-  function getTokenAddress()
-    external
-    view
-    returns (address)
-  {
-    return ERC20_TOKEN_CONTRACT;
   }
 
   /**
@@ -136,7 +122,6 @@ contract Minter is
   {
     return TOKEN_TRANSFER_PROXY_CONTRACT;
   }
-
 
   /**
    * @dev Get address of xcert mint proxy used in minter.
@@ -359,7 +344,7 @@ contract Minter is
       {
         require(
           _transferViaTokenTransferProxy(
-            ERC20_TOKEN_CONTRACT,
+            _mintData.fees[i].tokenAddress,
             _mintData.to,
             _mintData.fees[i].feeAddress,
             _mintData.fees[i].feeAmount
