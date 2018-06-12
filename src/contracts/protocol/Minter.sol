@@ -195,6 +195,33 @@ contract Minter is
   }
 
   /**
+   * @dev Cancels xcert mint.
+   * @param _mintData Data needed for minting.
+   * @param _xcertData Data needed for minting a new Xcert.
+   */
+  function cancelMint(
+    MintData _mintData,
+    XcertData _xcertData
+  )
+    internal
+  {
+    address owner = _getOwner(_xcertData.xcert);
+    require(msg.sender == owner, "You are not the claim maker.");
+
+    bytes32 claim = getMintDataClaim(_mintData, _xcertData);
+
+    require(!mintPerformed[claim], "Cannot cancel performed mint.");
+
+    mintCancelled[claim] = true;
+
+    emit CancelMint(
+      _mintData.to,
+      _xcertData.xcert,
+      claim
+    );
+  }
+
+  /**
    * @dev Calculates keccak-256 hash of mint data from parameters.
    * @param _mintData Data needed for minting trough minter.
    * @param _xcertData Data needed for minting a new Xcert.
