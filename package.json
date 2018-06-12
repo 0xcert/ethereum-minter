@@ -65,10 +65,10 @@
     "transactions"
   ],
   "devDependencies": {
+    "@types/node": "^10.3.2",
     "eslint": "^4.19.1",
-    "truffle-flattener": "^1.2.5",
     "ethjs-util": "^0.1.4",
-    "web3-utils": "^1.0.0-beta.34"
+    "truffle-flattener": "^1.2.5"
   },
   "dependencies": {
     "@0xcert/ethereum-xcert": "^1.6.0",
