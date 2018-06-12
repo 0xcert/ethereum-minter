@@ -9,8 +9,8 @@ import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
  * @dev Based on: https://github.com/0xProject/contracts/blob/master/contracts/TokenTransferProxy.sol
  */
 contract TokenTransferProxy is 
-  Ownable {
-
+  Ownable 
+{
   /**
    * @dev Only authorized addresses can invoke functions with this modifier.
    */

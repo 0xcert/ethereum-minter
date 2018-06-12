@@ -8,8 +8,8 @@ import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
  * decentralized governance.
  */
 contract XcertMintProxy is 
-  Ownable {
-
+  Ownable 
+{
   /**
    * @dev Only authorized addresses can invoke functions with this modifier.
    */
