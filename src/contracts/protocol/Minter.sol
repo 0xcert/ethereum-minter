@@ -16,19 +16,19 @@ contract Minter is
 {
   using SafeMath for uint256;
 
-  /*
+  /** 
    * @dev contract addresses
    */
   address XCERT_MINT_PROXY_CONTRACT;
   address ERC20_TOKEN_CONTRACT;
   address TOKEN_TRANSFER_PROXY_CONTRACT;
 
-  /*
+  /** 
    * @dev Mapping of all canceled mints.
    */
   mapping(bytes32 => bool) public mintCancelled;
 
-  /*
+  /** 
    * @dev Mapping of all performed mints.
    */
   mapping(bytes32 => bool) public mintPerformed;
@@ -72,7 +72,7 @@ contract Minter is
     bytes32 s;
   }
 
-  /*
+  /** 
    * @dev This event emmits when xcert gets mint directly to the taker.
    * @param _to Address of the xcert recipient.
    * @param _xcert Address of the xcert contract.
@@ -84,7 +84,7 @@ contract Minter is
     bytes32 _xcertMintClaim
   );
 
-  /*
+  /** 
    * @dev This event emmits when xcert mint order is canceled.
    * @param _to Address of the xcert recipient.
    * @param _xcert Address of the xcert contract.
@@ -96,11 +96,11 @@ contract Minter is
     bytes32 _xcertMintClaim
   );
 
-  /*
+  /**
    * @dev Sets XCT token address, Token proxy address and xcert Proxy address.
-   * @param _xcertToken Address pointing to ERC20 Token contract.
+   * @param _erc20Token Address pointing to ERC20 Token contract.
    * @param _tokenTransferProxy Address pointing to TokenTransferProxy contract.
-   * @param _XcertProxy Address pointing to XcertProxy contract.
+   * @param _xcertMintProxy Address pointing to XcertProxy contract.
    */
   constructor(
     address _erc20Token,
@@ -115,7 +115,7 @@ contract Minter is
     //supportedInterfaces[0xe0b725c2] = true; // Minter
   }
 
-  /*
+  /** 
    * @dev Get address of token used in minter.
    */
   function getTokenAddress()
@@ -126,7 +126,7 @@ contract Minter is
     return ERC20_TOKEN_CONTRACT;
   }
 
-  /*
+  /**
    * @dev Get address of token transfer proxy used in minter.
    */
   function getTokenTransferProxyAddress()
@@ -138,7 +138,7 @@ contract Minter is
   }
 
 
-  /*
+  /**
    * @dev Get address of xcert mint proxy used in minter.
    */
   function getXcertMintProxyAddress()
@@ -149,11 +149,11 @@ contract Minter is
     return XCERT_MINT_PROXY_CONTRACT;
   }
 
-  /*
+  /**
    * @dev Calculates keccak-256 hash of mint data from parameters.
    * @param _mintData Data needed for minting trough minter.
    * @param _xcertData Data needed for minting a new Xcert.
-   * @returns keccak-hash of mint data.
+   * @return keccak-hash of mint data.
    */
   function getMintDataClaim(
     MintData _mintData,
@@ -180,7 +180,7 @@ contract Minter is
     );
   }
 
-  /*
+  /**
    * @dev Verifies if claim signature is valid.
    * @param _signer address of signer.
    * @param _claim Signed Keccak-256 hash.
@@ -209,7 +209,7 @@ contract Minter is
     );
   }
 
-  /*
+  /** 
    * @dev Transfers ERC20 tokens via TokenTransferProxy using transferFrom function.
    * @param _token Address of token to transferFrom.
    * @param _from Address transfering token.
@@ -234,7 +234,7 @@ contract Minter is
     );
   }
 
-  /*
+  /**
    * @dev Mints new Xcert via XcertProxy using mint function.
    * @param _mintData Structure of all mint data.
    * @param _to Address of Xcert receiver.
@@ -257,7 +257,7 @@ contract Minter is
     );
   }
 
-  /*
+  /** 
    * @dev Gets xcert contract owner.
    * @param _xcert Contract address.
    */
@@ -271,7 +271,7 @@ contract Minter is
     return Xcert(_xcert).owner();
   }
 
-  /*
+  /**
    * @dev Helper function that pays all the feeAmounts.
    * @param _mintData Data needed for paying fees.
    * @return Success of payments.
