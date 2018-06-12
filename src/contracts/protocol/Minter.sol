@@ -57,7 +57,6 @@ contract Minter is
    * @dev Structure of data needed for mint.
    */
   struct MintData{
-    address owner;
     address to;
     Fee[] fees;
     uint256 seed;
