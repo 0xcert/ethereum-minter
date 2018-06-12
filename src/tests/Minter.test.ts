@@ -29,8 +29,4 @@ describe('Minter', async () => {
       assert.equal(address, this.mintProxy._address);
     });
   });
-
-  it('Does nothing - test', async () => {
-    //await this.minter.methods.performMint().send({ from: this.accounts[0] });
-  });
 });
