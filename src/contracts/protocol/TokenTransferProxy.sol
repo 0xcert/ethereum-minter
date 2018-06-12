@@ -1,21 +1,3 @@
-/**
-
-  Copyright 2017 ZeroEx Intl.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-
-*/
-
 pragma solidity 0.4.24;
 
 import "@0xcert/ethereum-erc20/contracts/tokens/ERC20.sol";
@@ -24,9 +6,10 @@ import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 /**
  * @title TokenTransferProxy - Transfers tokens on behalf of contracts that have been approved via
  * decentralized governance.
- * @author Amir Bandeali - <amir@0xProject.com>, Will Warren - <will@0xProject.com>
+ * @dev Based on: https://github.com/0xProject/contracts/blob/master/contracts/TokenTransferProxy.sol
  */
-contract TokenTransferProxy is Ownable {
+contract TokenTransferProxy is 
+  Ownable {
 
   /**
    * @dev Only authorized addresses can invoke functions with this modifier.
@@ -40,16 +23,16 @@ contract TokenTransferProxy is Ownable {
    * @dev Only if target is autorized you can invoke functions with this modifier.
    */
   modifier targetAuthorized(address target) {
-      require(authorized[target]);
-      _;
+    require(authorized[target]);
+    _;
   }
 
   /**
    * @dev Only if target is not autorized you can invoke functions with this modifier.
    */
   modifier targetNotAuthorized(address target) {
-      require(!authorized[target]);
-      _;
+    require(!authorized[target]);
+    _;
   }
 
   /**
