@@ -1,10 +1,5 @@
 pragma solidity 0.4.24;
 
-/**
- * @dev based on:
- * https://github.com/0xProject/contracts/blob/master/contracts/TokenTransferProxy.sol
- */
-
 import "@0xcert/ethereum-xcert/contracts/tokens/Xcert.sol";
 import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 
@@ -12,7 +7,8 @@ import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
  * @title XcertMintProxy - Mints a token on behalf of contracts that have been approved via
  * decentralized governance.
  */
-contract XcertMintProxy is Ownable {
+contract XcertMintProxy is 
+  Ownable {
 
   /**
    * @dev Only authorized addresses can invoke functions with this modifier.
@@ -97,7 +93,6 @@ contract XcertMintProxy is Ownable {
     }
     emit LogAuthorizedAddressRemoved(target, msg.sender);
   }
-
 
   /**
    * @dev Mints a new NFT.
