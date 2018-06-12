@@ -12,7 +12,8 @@ import "./XcertMintProxy.sol";
 /**
  @dev Contract for decetralized minting of NFTs. 
  */
-contract Minter is SupportsInterface
+contract Minter is
+  SupportsInterface
 {
   using SafeMath for uint256;
 
@@ -148,5 +149,36 @@ contract Minter is SupportsInterface
     returns (address)
   {
     return XCERT_MINT_PROXY_CONTRACT;
+  }
+
+  /*
+   * @dev Calculates keccak-256 hash of mint data from parameters.
+   * @param _mintData Data needed for minting trough minter.
+   * @param _xcertData Data needed for minting a new Xcert.
+   * @returns keccak-hash of mint data.
+   */
+  function getMintDataClaim(
+    MintData _mintData,
+    XcertData _xcertData
+  )
+    public
+    view
+    returns (bytes32)
+  {
+    return keccak256(
+      abi.encodePacked(
+        address(this),
+        _mintData.to,
+        _xcertData.xcert,
+        _xcertData.id,
+        _xcertData.proof,
+        _xcertData.uri,
+        _xcertData.config,
+        _xcertData.data,
+        _mintData.fees,
+        _mintData.seed,
+        _mintData.expirationTimestamp
+      )
+    );
   }
 }
