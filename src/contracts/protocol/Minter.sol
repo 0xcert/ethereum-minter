@@ -181,4 +181,33 @@ contract Minter is
       )
     );
   }
+
+  /*
+   * @dev Verifies if claim signature is valid.
+   * @param _signer address of signer.
+   * @param _claim Signed Keccak-256 hash.
+   * @param _signature Signature data.
+   * @return Validity of signature.
+   */
+  function isValidSignature(
+    address _signer,
+    bytes32 _claim,
+    Signature _signature
+  )
+    public
+    pure
+    returns (bool)
+  {
+    return _signer == ecrecover(
+      keccak256(
+        abi.encodePacked(
+          "\x19Ethereum Signed Message:\n32",
+          _claim
+        )
+      ),
+      _signature.v,
+      _signature.r,
+      _signature.s
+    );
+  }
 }
