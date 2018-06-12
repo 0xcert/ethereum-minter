@@ -270,4 +270,31 @@ contract Minter is
   {
     return Xcert(_xcert).owner();
   }
+
+  /*
+   * @dev Helper function that pays all the feeAmounts.
+   * @param _mintData Data needed for paying fees.
+   * @return Success of payments.
+   */
+  function _payfeeAmounts(
+    MintData _mintData
+  )
+    internal
+  {
+    for(uint256 i; i < _mintData.fees.length; i++)
+    {
+      if(_mintData.fees[i].feeAddress != address(0) && _mintData.fees[i].feeAmount > 0)
+      {
+        require(
+          _transferViaTokenTransferProxy(
+            ERC20_TOKEN_CONTRACT,
+            _mintData.to,
+            _mintData.fees[i].feeAddress,
+            _mintData.fees[i].feeAmount
+          ), 
+          "Insufficient balance or allowance."
+        );
+      }
+    }
+  }
 }
