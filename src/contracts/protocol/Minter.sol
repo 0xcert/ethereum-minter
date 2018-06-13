@@ -307,8 +307,8 @@ contract Minter is
       _mintData.xcert,
       _to,
       _mintData.id,
-      _mintData.proof,
       _mintData.uri,
+      _mintData.proof,
       _mintData.config,
       _mintData.data
     );
