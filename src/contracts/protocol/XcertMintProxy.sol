@@ -1,33 +1,15 @@
-/**
-
-  Copyright 2017 ZeroEx Intl.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-
-*/
-
 pragma solidity 0.4.24;
 
-import "../tokens/ERC20.sol";
+import "@0xcert/ethereum-xcert/contracts/tokens/Xcert.sol";
 import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 
 /**
- * @title TokenTransferProxy - Transfers tokens on behalf of contracts that have been approved via
+ * @title XcertMintProxy - Mints a token on behalf of contracts that have been approved via
  * decentralized governance.
- * @author Amir Bandeali - <amir@0xProject.com>, Will Warren - <will@0xProject.com>
  */
-contract TokenTransferProxy is Ownable {
-
+contract XcertMintProxy is 
+  Ownable 
+{
   /**
    * @dev Only authorized addresses can invoke functions with this modifier.
    */
@@ -40,16 +22,16 @@ contract TokenTransferProxy is Ownable {
    * @dev Only if target is autorized you can invoke functions with this modifier.
    */
   modifier targetAuthorized(address target) {
-      require(authorized[target]);
-      _;
+    require(authorized[target]);
+    _;
   }
 
   /**
    * @dev Only if target is not autorized you can invoke functions with this modifier.
    */
   modifier targetNotAuthorized(address target) {
-      require(!authorized[target]);
-      _;
+    require(!authorized[target]);
+    _;
   }
 
   /**
@@ -113,23 +95,29 @@ contract TokenTransferProxy is Ownable {
   }
 
   /**
-   * @dev Calls into ERC20 Token contract, invoking transferFrom.
-   * @param token Address of token to transfer.
-   * @param from Address to transfer token from.
-   * @param to Address to transfer token to.
-   * @param value Amount of token to transfer.
+   * @dev Mints a new NFT.
+   * @param _xcert Address of the Xcert contract on which the mint will be perfomed.
+   * @param _to The address that will own the minted NFT.
+   * @param _id The NFT to be minted by the msg.sender.
+   * @param _uri An URI pointing to NFT metadata.
+   * @param _proof Cryptographic asset imprint.
+   * @param _config Array of protocol config values where 0 index represents token expiration
+   * timestamp, other indexes are not yet definied but are ready for future xcert upgrades.
+   * @param _data Array of convention data values.
    */
-  function transferFrom(
-    address token,
-    address from,
-    address to,
-    uint value
+  function mint(
+    address _xcert,
+    address _to,
+    uint256 _id,
+    string _uri,
+    string _proof,
+    bytes32[] _config,
+    bytes32[] _data
   )
-    public
+    external
     onlyAuthorized
-    returns (bool)
   {
-    return ERC20(token).transferFrom(from, to, value);
+    Xcert(_xcert).mint(_to, _id, _uri, _proof, _config, _data);
   }
 
   /**
@@ -138,7 +126,7 @@ contract TokenTransferProxy is Ownable {
    */
   function getAuthorizedAddresses()
     public
-    constant
+    view
     returns (address[])
   {
     return authorities;

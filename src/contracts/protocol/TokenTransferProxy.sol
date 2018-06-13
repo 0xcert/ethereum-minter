@@ -1,19 +1,16 @@
 pragma solidity 0.4.24;
 
-/**
- * @dev based on:
- * https://github.com/0xProject/contracts/blob/master/contracts/TokenTransferProxy.sol
- */
-
-import "@0xcert/ethereum-xcert/contracts/tokens/Xcert.sol";
+import "@0xcert/ethereum-erc20/contracts/tokens/ERC20.sol";
 import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 
 /**
- * @title XcertMintProxy - Mints a token on behalf of contracts that have been approved via
+ * @title TokenTransferProxy - Transfers tokens on behalf of contracts that have been approved via
  * decentralized governance.
+ * @dev Based on: https://github.com/0xProject/contracts/blob/master/contracts/TokenTransferProxy.sol
  */
-contract XcertMintProxy is Ownable {
-
+contract TokenTransferProxy is 
+  Ownable 
+{
   /**
    * @dev Only authorized addresses can invoke functions with this modifier.
    */
@@ -98,31 +95,24 @@ contract XcertMintProxy is Ownable {
     emit LogAuthorizedAddressRemoved(target, msg.sender);
   }
 
-
   /**
-   * @dev Mints a new NFT.
-   * @param _xcert Address of the Xcert contract on which the mint will be perfomed.
-   * @param _to The address that will own the minted NFT.
-   * @param _id The NFT to be minted by the msg.sender.
-   * @param _uri An URI pointing to NFT metadata.
-   * @param _proof Cryptographic asset imprint.
-   * @param _config Array of protocol config values where 0 index represents token expiration
-   * timestamp, other indexes are not yet definied but are ready for future xcert upgrades.
-   * @param _data Array of convention data values.
+   * @dev Calls into ERC20 Token contract, invoking transferFrom.
+   * @param token Address of token to transfer.
+   * @param from Address to transfer token from.
+   * @param to Address to transfer token to.
+   * @param value Amount of token to transfer.
    */
-  function mint(
-    address _xcert,
-    address _to,
-    uint256 _id,
-    string _uri,
-    string _proof,
-    bytes32[] _config,
-    bytes32[] _data
+  function transferFrom(
+    address token,
+    address from,
+    address to,
+    uint value
   )
-    external
+    public
     onlyAuthorized
+    returns (bool)
   {
-    Xcert(_xcert).mint(_to, _id, _uri, _proof, _config, _data);
+    return ERC20(token).transferFrom(from, to, value);
   }
 
   /**
@@ -131,7 +121,7 @@ contract XcertMintProxy is Ownable {
    */
   function getAuthorizedAddresses()
     public
-    constant
+    view
     returns (address[])
   {
     return authorities;
