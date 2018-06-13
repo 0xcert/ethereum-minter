@@ -15,11 +15,21 @@ describe('Minter', function () {
   const mockProof = '1e205550c271490347e5e2393a02e94d284bbe9903f023ba098355b8d75974c8';
   const config = [web3.utils.padLeft(web3.utils.numberToHex(1821195657), 64)];
   const data = [web3.utils.padLeft(web3.utils.numberToHex(3), 64)];
+
+  before(async function () {
+    accounts = await web3.eth.getAccounts();
+  });
   
-  beforeEach(async () => {
-    tokenProxy = await artifact.deploy({ src: 'TokenTransferProxy.json' });
-    mintProxy = await artifact.deploy({ src: 'XcertMintProxy.json' });
-    token = await artifact.deploy({ src: 'TokenMock.json' });
+  beforeEach(async function () {
+    tokenProxy = await artifact.deploy({ 
+      src: 'TokenTransferProxy.json' 
+    });
+    mintProxy = await artifact.deploy({ 
+      src: 'XcertMintProxy.json' 
+    });
+    token = await artifact.deploy({ 
+      src: 'TokenMock.json' 
+    });
 
     minter = await artifact.deploy({
       src: 'Minter.json', 
@@ -30,22 +40,108 @@ describe('Minter', function () {
       src: 'XcertMock.json',
       args: ['Foo', 'F', '0xa65de9e6']
     });
-
-    accounts = await web3.eth.getAccounts();
   });
 
-  describe('contract addresses', function () {
-
-    it('check if token transfer proxy address is correct', async () => {
-      let address = await minter.methods.getTokenTransferProxyAddress().call({ from: accounts[0] });
+  describe('constuctor()', function () {
+    it('sets token transfer address', async function () {
+      const address = await minter.methods
+        .getTokenTransferProxyAddress()
+        .call({ 
+          from: accounts[0],
+        });
       assert.equal(address, tokenProxy._address);
     });
 
-    it('check if xcert mint proxy address is correct', async () => {
-      let address = await minter.methods.getXcertMintProxyAddress().call({ from: accounts[0] });
+    it('sets mint proxy address', async function () {
+      const address = await minter.methods
+        .getXcertMintProxyAddress()
+        .call({ 
+          from: accounts[0],
+        });
       assert.equal(address, mintProxy._address);
     });
   });
 
+  describe('hashing', function () {
+    beforeEach(async function () {
+    });
 
+    it('compares the same local and contract hash', async function () {
+    });
+
+    it('compares different local and contract hash', async function () {
+    });
+  });
+
+
+  describe('signature', function () {
+    beforeEach(async () => {
+    });
+
+    it('correctly validates correct signer', async () => {
+    });
+
+    it('correctly validates wrong signer', async () => {
+    });
+
+    it('correctly validates wrong signature data', async () => {
+    });
+
+    it('correctly validates signature data from another account', async () => {
+    });
+  });
+
+  describe('mint', function () {
+
+    describe('same signature tests', function () {
+
+      beforeEach(async () => {
+      });
+
+      describe('cancel', function () {
+        it('successfuly cancels mint', async () => {
+        });
+
+        it('throws when someone else then the minter tries to cancel it', async () => {
+        });
+
+        it('throws when trying to cancel an already performed mint', async () => {
+        });
+      });
+
+      describe('perform', function () {
+        it('mints correctly', async () => {
+        });
+
+        it('throws if msg.sender is not the receiver', async () => {
+        });
+
+        it('fails when trying to perform already performed mint', async () => {
+        });
+
+        it('fails when approved token amount is not sufficient', async () => {
+        });
+
+        it('throws when trying to perform canceled mint', async () => {
+        });
+
+        it('throws when does not have mint rights', async () => {
+        });
+      });
+    });
+
+    describe('different signature tests', function () {
+      it('mints correctly when no fees', async () => {
+      });
+
+      it('throws when fee amount array is no the same length then feeRecipient', async () => {
+      });
+
+      it('throws when to and the owner addresses are the same', async () => {
+      });
+
+      it('throws if current time is after expirationTimestamp', async () => {
+      });
+    });
+  });
 });
