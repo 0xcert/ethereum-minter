@@ -6,8 +6,8 @@
     "clean": "rm -Rf ./dist",
     "compile": "chainspin compile",
     "sandbox": "chainspin sandbox",
-    "prepare": "npm run compile",
-    "test": "npm run compile && chainspin test"
+    "prepare": "",
+    "test": ""
   },
   "chainspin": {
     "sandboxHost": "127.0.0.1",
