@@ -121,7 +121,7 @@ contract TokenTransferProxy is
    */
   function getAuthorizedAddresses()
     public
-    constant
+    view
     returns (address[])
   {
     return authorities;
