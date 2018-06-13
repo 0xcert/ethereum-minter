@@ -67,9 +67,9 @@ contract Minter is
    * @dev Structure representing the signature parts.
    */
   struct Signature{
-    uint8 v;
     bytes32 r;
     bytes32 s;
+    uint8 v;
   }
 
   /** 
