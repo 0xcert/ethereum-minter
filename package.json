@@ -1,80 +1,29 @@
 {
   "name": "@0xcert/ethereum-minter",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Decentralized token minter implementation for the 0xcert protocol on the Ethereum blockchain.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "directories": {
-    "contracts": "contracts",
-    "migrations": "migrations",
-    "test": "test"
-  },
   "scripts": {
-    "clean": "rm -Rf ./dist; rm -Rf ./build",
-    "build": "npm run clean; tsc",
+    "clean": "rm -Rf ./dist",
     "compile": "chainspin compile",
     "sandbox": "chainspin sandbox",
-    "prepare": "npm run build && npm run compile",
-    "test": "npm run prepare && chainspin test",
-    "flatten": "mkdir -p build && truffle-flattener contracts/**/*.sol >> build/bundle.sol"
+    "prepare": "npm run compile",
+    "test": "npm run compile && chainspin test"
   },
   "chainspin": {
     "sandboxHost": "127.0.0.1",
     "sandboxPort": 8545,
     "solcSrc": "src/contracts",
     "solcDist": "dist/contracts",
-    "testRoot": "dist/tests",
+    "testRoot": "src/tests",
     "testTimeout": 60000
   },
-  "author": "0xcert",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/0xcert/ethereum-minter.git"
-  },
-  "bugs": {
-    "url": "https://github.com/0xcert/ethereum-minter/issues"
-  },
-  "homepage": "https://github.com/0xcert/ethereum-minter#readme",
-  "keywords": [
-    "ethereum",
-    "blockchain",
-    "eth",
-    "contract",
-    "contracts",
-    "smart",
-    "smart-contract",
-    "smart-contracts",
-    "token",
-    "tokens",
-    "nft",
-    "nfts",
-    "non-fungible",
-    "non-fungibles",
-    "eip",
-    "erc",
-    "erc721",
-    "erc-721",
-    "deed",
-    "standard",
-    "xcert",
-    "minter",
-    "decentralized",
-    "decentralization",
-    "atomic",
-    "transactions"
-  ],
-  "devDependencies": {
-    "@types/node": "^10.3.2",
-    "eslint": "^4.19.1",
-    "ethjs-util": "^0.1.4",
-    "truffle-flattener": "^1.2.5"
-  },
   "dependencies": {
-    "@0xcert/ethereum-xcert": "^1.6.0",
-    "@0xcert/ethereum-erc20": "^1.2.1",
-    "@chainspin/cli": "0.15.0",
-    "@chainspin/test": "0.15.0",
+    "@0xcert/ethereum-erc20": "1.2.1",
+    "@0xcert/ethereum-utils": "1.0.1",
+    "@0xcert/ethereum-xcert": "1.6.0",
+    "@chainspin/cli": "0.16.0",
+    "@chainspin/test": "0.16.0",
     "typescript": "^2.9.1"
   }
 }
