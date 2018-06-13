@@ -188,7 +188,7 @@ contract Minter is
     MintData _mintData,
     XcertData _xcertData
   )
-    internal
+    public
   {
     address owner = _getOwner(_xcertData.xcert);
     require(msg.sender == owner, "You are not the claim maker.");
