@@ -572,15 +572,159 @@ describe('Minter', function () {
 
     describe('different signature tests', function () {
       it('mints correctly when no fees', async function () {
+        mintData.fees = [];
+
+        const hash = await minter.methods
+          .getMintDataClaim(toTuple(mintData), toTuple(xcertData))
+          .call({
+            from: owner
+          });
+         
+        const signature = await web3.eth.sign(hash, owner);
+
+        rsv = {
+          r: signature.substr(0, 66),
+          s: '0x' + signature.substr(66, 64),
+          v: parseInt('0x' + signature.substr(130, 2)) + 27,
+        }
+        
+        await xcert.methods
+          .setAuthorizedAddress(mintProxy._address, true)
+          .send({
+            from: owner,
+          });
+
+        const logs = await minter.methods
+          .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+          .send({
+            from: to,
+            gas: 2000000,
+          });
+
+        assert.notEqual(logs.events.PerformMint, undefined);
+
+        const tokenOwner = await xcert.methods
+          .ownerOf(id1)
+          .call({
+            from: owner,
+          });
+
+        assert.equal(tokenOwner, to);
       });
 
-      it('throws when fee amount array is no the same length then feeRecipient', async function () {
+      it('throws when fees not correctly configured', async function () {
+        mintData.fees = [{
+            feeAddress: accounts[1],
+            feeAmount: -1,
+            tokenAddress: token._address,
+          }];
+
+        const hash = await minter.methods
+          .getMintDataClaim(toTuple(mintData), toTuple(xcertData))
+          .call({
+            from: owner
+          });
+         
+        const signature = await web3.eth.sign(hash, owner);
+
+        rsv = {
+          r: signature.substr(0, 66),
+          s: '0x' + signature.substr(66, 64),
+          v: parseInt('0x' + signature.substr(130, 2)) + 27,
+        }
+
+        await token.methods
+          .approve(tokenProxy._address, 20)
+          .send({
+            from: owner,
+          });
+        
+        await xcert.methods
+          .setAuthorizedAddress(mintProxy._address, true)
+          .send({
+            from: owner,
+          });
+
+        await assertRevert( 
+          minter.methods
+          .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+          .send({
+            from: owner,
+            gas: 2000000,
+          })
+        );
       });
 
       it('throws when to and the owner addresses are the same', async function () {
+        mintData.to = owner;
+
+        const hash = await minter.methods
+          .getMintDataClaim(toTuple(mintData), toTuple(xcertData))
+          .call({
+            from: owner
+          });
+        
+        const signature = await web3.eth.sign(hash, owner);
+
+        rsv = {
+          r: signature.substr(0, 66),
+          s: '0x' + signature.substr(66, 64),
+          v: parseInt('0x' + signature.substr(130, 2)) + 27,
+        }
+        
+        await xcert.methods
+          .setAuthorizedAddress(mintProxy._address, true)
+          .send({
+            from: owner,
+          });
+
+        await assertRevert( 
+          minter.methods
+          .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+          .send({
+            from: to,
+            gas: 2000000,
+          })
+        );
       });
 
       it('throws if current time is after expirationTimestamp', async function () {
+        mintData.expirationTimestamp = timestamp;
+
+        const hash = await minter.methods
+          .getMintDataClaim(toTuple(mintData), toTuple(xcertData))
+          .call({
+            from: owner
+          });
+        
+        const signature = await web3.eth.sign(hash, owner);
+
+        rsv = {
+          r: signature.substr(0, 66),
+          s: '0x' + signature.substr(66, 64),
+          v: parseInt('0x' + signature.substr(130, 2)) + 27,
+        }
+
+        await token.methods
+          .approve(tokenProxy._address, 20)
+          .send({
+            from: to,
+          });
+        
+        await xcert.methods
+          .setAuthorizedAddress(mintProxy._address, true)
+          .send({
+            from: owner,
+          });
+
+        await assertRevert( 
+          minter.methods
+          .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+          .send({
+            from: to,
+            gas: 2000000,
+          })
+        );
       });
     });
   });
