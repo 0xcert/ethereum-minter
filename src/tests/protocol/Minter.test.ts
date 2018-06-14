@@ -290,19 +290,110 @@ describe('Minter', function () {
 
   describe('mint', function () {
 
+    let rsv;
+    let timestamp = 1521195657;
+    let expirationTimestamp = 1821195657;
+    let owner;
+    let to;
+    let thirdParty;
+    let xcertData;
+    let mintData;
+
+    beforeEach(async function () {
+      owner = accounts[0];
+      to = accounts[2];
+      thirdParty = accounts[3];
+
+      xcertData = {
+        xcert: xcert._address,
+        id: id1,
+        proof: mockProof,
+        uri: uri,
+        config: config,
+        data: data,
+      }
+
+      mintData = {
+        to: to,
+        fees: [
+          {
+            feeAddress: accounts[1],
+            feeAmount: 20,
+            tokenAddress: token._address,
+          },
+        ],
+        seed: timestamp,
+        expirationTimestamp: expirationTimestamp,
+      }
+    });
+
     describe('same signature tests', function () {
 
       beforeEach(async function () {
+
+        const hash = await minter.methods
+          .getMintDataClaim(toTuple(mintData), toTuple(xcertData))
+          .call({
+            from: owner
+          });
+           
+        const signature = await web3.eth.sign(hash, owner);
+  
+        rsv = {
+          r: signature.substr(0, 66),
+          s: '0x' + signature.substr(66, 64),
+          v: parseInt('0x' + signature.substr(130, 2)) + 27,
+        }
       });
 
       describe('cancel', function () {
         it('successfuly cancels mint', async function () {
+          const logs = await minter.methods
+            .cancelMint(toTuple(mintData), toTuple(xcertData))
+            .send({
+              from: owner
+            });
+          assert.notEqual(logs.events.CancelMint, undefined);
         });
 
         it('throws when someone else then the minter tries to cancel it', async function () {
+          await assertRevert(
+            minter.methods
+            .cancelMint(toTuple(mintData), toTuple(xcertData))
+            .send({
+              from: thirdParty
+            })
+          );
         });
 
         it('throws when trying to cancel an already performed mint', async function () {
+
+          await token.methods
+            .approve(tokenProxy._address, 20)
+            .send({
+              from: to
+            });
+
+          await xcert.methods
+            .setAuthorizedAddress(mintProxy._address, true)
+            .send({
+              from: owner
+            });
+
+          await minter.methods
+            .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+            .send({
+              from: to,
+              gas: 2000000
+            });
+
+          await assertRevert(
+            minter.methods
+            .cancelMint(toTuple(mintData), toTuple(xcertData))
+            .send({
+              from: owner
+            })
+          );
         });
       });
 
