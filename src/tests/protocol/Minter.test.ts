@@ -208,21 +208,83 @@ describe('Minter', function () {
     });
   });*/
 
-
   describe('signature', function () {
+    let hash;
+    let rsv;
+
+    let timestamp = 1521195657;
+    let expirationTimestamp = 1821195657;
+
     beforeEach(async function () {
+
+      const xcertData = {
+        xcert: xcert._address,
+        id: id1,
+        proof: mockProof,
+        uri: uri,
+        config: config,
+        data: data,
+      }
+
+      const mintData = {
+        to: accounts[1],
+        fees: [
+          {
+            feeAddress: accounts[3],
+            feeAmount: 1,
+            tokenAddress: token._address,
+          },
+          {
+            feeAddress: accounts[5],
+            feeAmount: 10,
+            tokenAddress: token._address,
+          }
+        ],
+        seed: timestamp,
+        expirationTimestamp: expirationTimestamp,
+      }
+
+      hash = await minter.methods
+        .getMintDataClaim(toTuple(mintData), toTuple(xcertData))
+        .call({
+          from: accounts[0]
+        });
+         
+      let signature = await web3.eth.sign(hash, accounts[0]);
+
+      rsv = {
+        r: signature.substr(0, 66),
+        s: '0x' + signature.substr(66, 64),
+        v: parseInt('0x' + signature.substr(130, 2)) + 27,
+      }
     });
 
     it('correctly validates correct signer', async function () {
+      const valid = await minter.methods
+        .isValidSignature(accounts[0], hash, toTuple(rsv))
+        .call({
+          from: accounts[0]
+        });
+      assert.equal(valid, true);
     });
 
     it('correctly validates wrong signer', async function () {
+      const valid = await minter.methods
+        .isValidSignature(accounts[1], hash, toTuple(rsv))
+        .call({
+          from: accounts[0]
+        });
+      assert.equal(valid, false);
     });
 
     it('correctly validates wrong signature data', async function () {
-    });
-
-    it('correctly validates signature data from another account', async function () {
+      rsv.r = '0x4e7cbaf43f2c2df6aa359bdaf2bd845f8b4570ae36981beb5c09880244c31816';
+      const valid = await minter.methods
+        .isValidSignature(accounts[0], hash, toTuple(rsv))
+        .call({
+          from: accounts[0]
+        });
+      assert.equal(valid, false);
     });
   });
 
