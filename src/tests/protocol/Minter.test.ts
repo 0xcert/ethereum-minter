@@ -398,22 +398,174 @@ describe('Minter', function () {
       });
 
       describe('perform', function () {
+
         it('mints correctly', async function () {
+          await token.methods
+            .approve(tokenProxy._address, 20)
+            .send({
+              from: to,
+            });
+
+          await xcert.methods
+            .setAuthorizedAddress(mintProxy._address, true)
+            .send({
+              from: owner,
+            });
+
+          const logs = await minter.methods
+            .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+            .send({
+              from: to,
+              gas: 2000000,
+            });
+
+          assert.notEqual(logs.events.PerformMint, undefined);
+
+          const tokenOwner = await xcert.methods
+            .ownerOf(id1)
+            .call({
+              from: owner,
+            });
+
+          assert.equal(tokenOwner, to);
+
+          const tokenAmountAcc1 = await token.methods
+            .balanceOf(accounts[1])
+            .call({
+              from: owner,
+            });
+
+          const tokenAmountAcc2 = await token.methods
+            .balanceOf(to)
+            .call({
+              from: owner,
+            });
+
+          assert.equal(tokenAmountAcc1, 220);
+          assert.equal(tokenAmountAcc2, 180);
         });
 
         it('throws if msg.sender is not the receiver', async function () {
+          await token.methods
+            .approve(tokenProxy._address, 20)
+            .send({
+              from: to,
+            });
+
+          await xcert.methods
+            .setAuthorizedAddress(mintProxy._address, true)
+            .send({
+              from: owner,
+            });
+
+          await assertRevert( 
+            minter.methods
+            .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+            .send({
+              from: thirdParty,
+              gas: 2000000,
+            })
+          );
         });
 
         it('fails when trying to perform already performed mint', async function () {
+          await token.methods
+            .approve(tokenProxy._address, 20)
+            .send({
+              from: to,
+            });
+
+          await xcert.methods
+            .setAuthorizedAddress(mintProxy._address, true)
+            .send({
+              from: owner,
+            });
+
+          await minter.methods
+            .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+            .send({
+              from: to,
+              gas: 2000000,
+            });
+        
+          await assertRevert( 
+            minter.methods
+            .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+            .send({
+              from: to,
+              gas: 2000000,
+            })
+          );
         });
 
         it('fails when approved token amount is not sufficient', async function () {
+          await token.methods
+            .approve(tokenProxy._address, 10)
+            .send({
+              from: to,
+            });
+
+          await xcert.methods
+            .setAuthorizedAddress(mintProxy._address, true)
+            .send({
+              from: owner,
+            });
+
+          await assertRevert( 
+            minter.methods
+            .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+            .send({
+              from: to,
+              gas: 2000000,
+            })
+          );
         });
 
         it('throws when trying to perform canceled mint', async function () {
+          await token.methods
+            .approve(tokenProxy._address, 20)
+            .send({
+              from: to,
+            });
+
+          await xcert.methods
+            .setAuthorizedAddress(mintProxy._address, true)
+            .send({
+              from: owner,
+            });
+
+          await minter.methods
+            .cancelMint(toTuple(mintData), toTuple(xcertData))
+            .send({
+              from: owner,
+              gas: 2000000,
+            });
+        
+          await assertRevert( 
+            minter.methods
+            .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+            .send({
+              from: to,
+              gas: 2000000,
+            })
+          );
         });
 
         it('throws when does not have mint rights', async function () {
+          await token.methods
+            .approve(tokenProxy._address, 20)
+            .send({
+              from: to,
+            });
+
+          await assertRevert( 
+            minter.methods
+            .performMint(toTuple(mintData), toTuple(xcertData), toTuple(rsv))
+            .send({
+              from: to,
+              gas: 2000000,
+            })
+          );
         });
       });
     });
