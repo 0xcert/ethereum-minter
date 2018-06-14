@@ -1,5 +1,7 @@
 import { assert, artifact, web3 } from '@chainspin/test';
 import { toTuple } from '@chainspin/utils';
+import assertRevert from '../helpers/assertRevert';
+
 
 describe('Minter', function () {
   let minter;
@@ -75,19 +77,19 @@ describe('Minter', function () {
 
 
   describe('signature', function () {
-    beforeEach(async () => {
+    beforeEach(async function () {
     });
 
-    it('correctly validates correct signer', async () => {
+    it('correctly validates correct signer', async function () {
     });
 
-    it('correctly validates wrong signer', async () => {
+    it('correctly validates wrong signer', async function () {
     });
 
-    it('correctly validates wrong signature data', async () => {
+    it('correctly validates wrong signature data', async function () {
     });
 
-    it('correctly validates signature data from another account', async () => {
+    it('correctly validates signature data from another account', async function () {
     });
   });
 
@@ -95,52 +97,52 @@ describe('Minter', function () {
 
     describe('same signature tests', function () {
 
-      beforeEach(async () => {
+      beforeEach(async function () {
       });
 
       describe('cancel', function () {
-        it('successfuly cancels mint', async () => {
+        it('successfuly cancels mint', async function () {
         });
 
-        it('throws when someone else then the minter tries to cancel it', async () => {
+        it('throws when someone else then the minter tries to cancel it', async function () {
         });
 
-        it('throws when trying to cancel an already performed mint', async () => {
+        it('throws when trying to cancel an already performed mint', async function () {
         });
       });
 
       describe('perform', function () {
-        it('mints correctly', async () => {
+        it('mints correctly', async function () {
         });
 
-        it('throws if msg.sender is not the receiver', async () => {
+        it('throws if msg.sender is not the receiver', async function () {
         });
 
-        it('fails when trying to perform already performed mint', async () => {
+        it('fails when trying to perform already performed mint', async function () {
         });
 
-        it('fails when approved token amount is not sufficient', async () => {
+        it('fails when approved token amount is not sufficient', async function () {
         });
 
-        it('throws when trying to perform canceled mint', async () => {
+        it('throws when trying to perform canceled mint', async function () {
         });
 
-        it('throws when does not have mint rights', async () => {
+        it('throws when does not have mint rights', async function () {
         });
       });
     });
 
     describe('different signature tests', function () {
-      it('mints correctly when no fees', async () => {
+      it('mints correctly when no fees', async function () {
       });
 
-      it('throws when fee amount array is no the same length then feeRecipient', async () => {
+      it('throws when fee amount array is no the same length then feeRecipient', async function () {
       });
 
-      it('throws when to and the owner addresses are the same', async () => {
+      it('throws when to and the owner addresses are the same', async function () {
       });
 
-      it('throws if current time is after expirationTimestamp', async () => {
+      it('throws if current time is after expirationTimestamp', async function () {
       });
     });
   });
