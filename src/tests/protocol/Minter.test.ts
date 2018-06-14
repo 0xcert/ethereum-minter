@@ -26,12 +26,32 @@ describe('Minter', function () {
     tokenProxy = await artifact.deploy({ 
       src: 'TokenTransferProxy.json' 
     });
+
     mintProxy = await artifact.deploy({ 
       src: 'XcertMintProxy.json' 
     });
+
     token = await artifact.deploy({ 
       src: 'TokenMock.json' 
     });
+
+    await token.methods
+      .transfer(accounts[1], 200)
+      .send({
+        from: accounts[0]
+      });
+
+    await token.methods
+      .transfer(accounts[2], 200)
+      .send({
+        from: accounts[0]
+      });
+
+    await token.methods
+      .transfer(accounts[3], 200)
+      .send({
+        from: accounts[0]
+      });
 
     minter = await artifact.deploy({
       src: 'Minter.json', 
@@ -42,6 +62,18 @@ describe('Minter', function () {
       src: 'XcertMock.json',
       args: ['Foo', 'F', '0xa65de9e6']
     });
+
+    await tokenProxy.methods
+      .addAuthorizedAddress(minter._address)
+      .send({
+        from: accounts[0]
+      });
+
+    await mintProxy.methods
+      .addAuthorizedAddress(minter._address)
+      .send({
+        from: accounts[0]
+      });
   });
 
   describe('constuctor()', function () {
