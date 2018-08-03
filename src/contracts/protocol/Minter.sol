@@ -307,8 +307,8 @@ contract Minter is
       _mintData.xcert,
       _to,
       _mintData.id,
-      _mintData.proof,
       _mintData.uri,
+      _mintData.proof,
       _mintData.config,
       _mintData.data
     );
@@ -340,7 +340,9 @@ contract Minter is
   {
     for(uint256 i; i < _mintData.fees.length; i++)
     {
-      if(_mintData.fees[i].feeAddress != address(0) && _mintData.fees[i].feeAmount > 0)
+      if(_mintData.fees[i].feeAddress != address(0) 
+        && _mintData.fees[i].tokenAddress != address(0)
+        && _mintData.fees[i].feeAmount > 0)
       {
         require(
           _transferViaTokenTransferProxy(
